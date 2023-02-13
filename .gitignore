@@ -1,0 +1,10 @@
+PROD/Back-End/environment/node_modules/*
+PROD/Back-End/environment/.serverless
+PROD/Back-End/environment/package-lock.json
+package-lock.json
+node_modules/
+credentials
+
+*.properties
+*.pem
+bpm_creds.csv

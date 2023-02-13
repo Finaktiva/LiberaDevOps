@@ -1,0 +1,7 @@
+{
+  "Template": {
+      "TemplateName": "send-documentation-resolution",
+      "SubjectPart": "Revisión documental Factoring Banco de Occidente",
+      "HtmlPart": "<p>Buen D&iacute;a, Informamos que se ha realizado la revisi&oacute;n de sus documentos cargados con el siguiente resultado:</p><table border='1'><thead style='background-color:#d9d9d9;'><th>Documento</th><th>Revisi&oacuten</th><th>Comentarios</th><th>Acci&oacuten para realizar</th></thead><tbody>{{#each documents}}<tr><td>{{document}}</td><td>{{status}}</td><td>{{comment}}</td><td>{{actions}}</td></tr>{{/each}}</tbody></table><p align='justify'>Cordialmente,</p><p><b>&Aacute;rea de Factoring y Unidirecto</b></p>"
+  }
+}

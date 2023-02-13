@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "lender-funding-request-email",
+        "SubjectPart": "LIBERA - Solicitud de Pago de Factura",
+        "HtmlPart": "<h1>{{lenderEnterpriseName}}</h1><br><p>Le informamos que la empresa {{payerEnterpriseName}} le ha solicitado fondear el pago de la siguiente factura siguientes:</p><br><p><b>ID Factura:</b>{{invoiceNumber}}<br> <b>Valor de la factura: </b>{{amount}}<br><b>Valor del descuento: </b> {{discountValue}}</p> <br><p>Para mas detalle revise su seccion de solicitudes.</p>"
+    }
+}

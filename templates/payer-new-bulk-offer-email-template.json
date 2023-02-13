@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "payer-new-bulk-offer-email-template",
+        "SubjectPart": "LIBERA - Nueva negociaci&oacute;n de facturas",
+        "HtmlPart": "<h1 style='color: #5e9ca0; text-align: center;'>{{enterpriseName}}</h1><p> </p><p><strong> {{provider}} </strong> ha realizado la siguiente oferta para la negociaci&oacute;n de {{invoiceNumber}} facturas. </p><br/><div style='padding: 10px;'><table><tbody><tr><th>No. Factura</th><th>Valor factura</th><th>Fecha vencimiento</th></tr>{{#each invoices}} <tr><td>{{invoiceNumber}}</td><td>{{amount}} {{currencyCode}}</td><td>{{expirationDate}}</td></tr>{{/each}} </tbody></table></div><div style='float: rigth; padding: 10px;'> </div><p><strong>Fondeador:</strong></p><p>{{lender}}</p><p><strong>Tipo de descuento:</strong></p><p>{{discountType}}</p><p><strong>Vigencia del descuento:</strong></p><p>{{discountDueDate}}</p><p><strong>Tasa:</strong></p><p>{{percentage}}%</p><p><strong>Fecha esperada de pago:</strong></p><p>{{expectedPaymentDate}}</p><br><hr /><p style='text-align: center;'><strong>Total de valor de facturas: {{totalAmount}} {{currencyCode}}</strong></p><p style='text-align: center;'><strong>Total descuento: {{discountAmount}} {{currencyCode}}</strong></p><p style='text-align: center;'><strong>Total a negociar: {{negotiationAmount}} {{currencyCode}}</strong></p><hr/><br/><p> Para m&aacute;s detalles, visite la secci&oacute;n de negociaciones masivas. </p>"
+    }
+}

@@ -1,0 +1,194 @@
+Parameters:
+  stage:
+    Description: The stage for these resources
+    Type: String
+Resources:
+  DistributionCloudFrontLiberaLanding:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName:
+              !Join
+                - ''
+                ##- - !ImportValue bucket-libera-cloudfront-prod
+                - - Fn::ImportValue: 
+                      !Sub "bucket-libera-cloudfront-${stage}"
+                  - .s3.amazonaws.com
+            ##Id: libera-landing-cloudfront-prod
+            Id: !Sub "libera-landing-cloudfront-${stage}"
+            OriginPath: /landing
+            S3OriginConfig:
+              OriginAccessIdentity:
+                !Join
+                  - ''
+                  - - origin-access-identity/cloudfront/
+                    ##- !ImportValue oai-libera-cloudfront-prod
+                    - Fn::ImportValue: 
+                        !Sub "oai-libera-cloudfront-${stage}"
+          ##- DomainName: !ImportValue libera-enterprise-domain-prod
+          - DomainName:
+              Fn::ImportValue: !Sub "libera-enterprise-domain-${stage}"
+                ##!Sub "libera-enterprise-domain-${stage}"
+            ##Id: libera-enterprise-cloudfront-prod
+            Id: !Sub "libera-enterprise-cloudfront-${stage}"
+            CustomOriginConfig:
+              OriginProtocolPolicy: match-viewer
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginKeepaliveTimeout: 5
+              OriginReadTimeout: 30
+          ##- DomainName: !ImportValue libera-admin-domain-prod
+          - DomainName:
+              Fn::ImportValue: !Sub "libera-admin-domain-${stage}"
+            ##Id: libera-admin-cloudfront-prod
+            Id: !Sub "libera-admin-cloudfront-${stage}" 
+            CustomOriginConfig:
+              OriginProtocolPolicy: match-viewer
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginKeepaliveTimeout: 5
+              OriginReadTimeout: 30
+        DefaultRootObject: index.html
+        CustomErrorResponses:
+          - ErrorCode: '404'
+            ResponseCode: '200'
+            ErrorCachingMinTTL: '30'
+            ResponsePagePath: "/index.html"
+        Enabled: true
+        HttpVersion: http2
+        DefaultCacheBehavior:
+          AllowedMethods: 
+            - HEAD
+            - GET
+          CachedMethods:
+            - HEAD
+            - GET
+          ForwardedValues:
+            Headers:
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+              - Origin
+            QueryString: false
+          ##TargetOriginId: libera-landing-cloudfront-prod
+          TargetOriginId: !Sub "libera-landing-cloudfront-${stage}" 
+          MinTTL: 86400
+          ViewerProtocolPolicy: allow-all
+        CacheBehaviors:
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: /admin
+            SmoothStreaming: false
+            ##TargetOriginId: libera-admin-cloudfront-prod
+            TargetOriginId: !Sub "libera-admin-cloudfront-${stage}"
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: /admin/*
+            SmoothStreaming: false
+            ##TargetOriginId: libera-admin-cloudfront-prod
+            TargetOriginId: !Sub "libera-admin-cloudfront-${stage}"
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: /enterprise
+            SmoothStreaming: false
+            ##TargetOriginId: libera-enterprise-cloudfront-prod
+            TargetOriginId: !Sub "libera-enterprise-cloudfront-${stage}"
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: /enterprise/*
+            SmoothStreaming: false
+            ##TargetOriginId: libera-enterprise-cloudfront-prod
+            TargetOriginId: !Sub "libera-enterprise-cloudfront-${stage}"
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: index.html
+            SmoothStreaming: false
+            ##TargetOriginId: libera-landing-cloudfront-prod
+            TargetOriginId: !Sub "libera-landing-cloudfront-${stage}"
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+        PriceClass: PriceClass_100
+      Tags:
+        - Key: centro-de-costos
+          ##Value:  libera-scf-prod
+          Value: !Sub "libera-scf-${stage}"
+
+Outputs:
+  LiberaLandingCloudFrontDomain:
+    Value: !GetAtt DistributionCloudFrontLiberaLanding.DomainName
+    Export:
+      ##Name: libera-landing-domain-prod
+      Name: !Sub "libera-landing-domain-${stage}"

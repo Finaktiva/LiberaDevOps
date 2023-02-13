@@ -1,0 +1,1 @@
+docker build -t lbocc-deployer -f ./Dockerfile .

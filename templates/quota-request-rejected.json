@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "quota-request-rejected",
+        "SubjectPart": "LIBERA Cupo",
+        "HtmlPart": "<h1>{{payerEnterpriseName}}</h1><p>En respuesta a la solicitud de cupo realizada a {{lenderEnterpriseName}} le informamos que fue declinada.</p><p>Sin embargo puede realizar nuevas solicitudes en cualquier otro momento.</p>"
+    }
+}

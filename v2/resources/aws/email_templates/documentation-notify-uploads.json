@@ -1,0 +1,7 @@
+{
+  "Template": {
+      "TemplateName": "documentation-notify-uploads",
+      "SubjectPart": "Actualización documental",
+      "HtmlPart": "<p>El cliente {{enterpriseName}} ha actualizado los siguientes documentos, por favor ingrese a la plataforma para realizar la aprobaci&oacute;n:</p><table border='1'><thead style='background-color:#d9d9d9;'><th>Documento</th></thead><tbody>{{#each documents}}<tr><td>{{document}}</td></tr>{{/each}}</tbody></table>"
+  }
+}

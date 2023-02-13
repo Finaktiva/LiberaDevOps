@@ -1,0 +1,31 @@
+version: '3.9'
+services:
+  mysql: 
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: en3aWzp85cFMke
+      MYSQL_DATABASE: libera-core-db
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql_db:/var/lib/mysql
+  mongo_db:
+    image: mongo:5.0.6
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: PPw9VxP?BwksAnVr
+    volumes:
+      - ./mongo_db:/data/db
+    ports:
+      - 27017:27017
+  bpm:
+      image: 083179295182.dkr.ecr.us-east-1.amazonaws.com/libera-scf-bpm-bocc-dev-ecr:latest
+      volumes:
+        - ./bpm-config:/opt/LIBERA_BPMN_HOME
+      ports:
+        - 8080:8080
+volumes:
+  mysql_db:
+  mongo_db:
+

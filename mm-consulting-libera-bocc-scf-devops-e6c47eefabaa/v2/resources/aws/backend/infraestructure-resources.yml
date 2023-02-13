@@ -1,0 +1,80 @@
+Description: Create EC2 Resources for compute
+Parameters:
+  Stage:
+    Type: String
+    Description: Defines stage for resources installation
+Resources:
+  LiberaEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      KeyName: !Sub libera-${Stage}-kp
+      InstanceType: t2.medium
+      ImageId: ami-0c02fb55956c7d316
+      SecurityGroupIds: 
+        - !Ref LiberaSecurityGroup
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 25
+      Tags:
+        - Key: Name
+          Value: !Sub libera-compute-${Stage}       
+
+  ElasticIPAddress:
+    Type: AWS::EC2::EIP
+    Properties: 
+      InstanceId: 
+        !Ref LiberaEC2Instance
+      Tags: 
+        - Key: Name
+          Value: !Sub libera-fixed-eip-${Stage} 
+
+  LiberaSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: libera-sg-inbound
+      GroupDescription: SG to allow SSH access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: '0.0.0.0/0'
+        - IpProtocol: tcp
+          FromPort: '27017'
+          ToPort: '27017'
+          CidrIp: '0.0.0.0/0'
+        - IpProtocol: tcp
+          FromPort: '3306'
+          ToPort: '3306'
+          CidrIp: '0.0.0.0/0'
+        - IpProtocol: tcp
+          FromPort: '8080'
+          ToPort: '8080'
+          CidrIp: '0.0.0.0/0'
+      Tags:
+        - Key: Name
+          Value: libera-sg-inbound
+
+  LiberaBPMRepository:
+    Type: AWS::ECR::Repository
+    Properties: 
+      RepositoryName: !Sub libera-scf-bpm-${Stage}-ecr
+
+Outputs:
+  LiberaComputeInstanceIP:
+    Value: 
+      !Ref ElasticIPAddress
+    Export:
+      Name: !Sub libera-compute-${Stage}-instance
+
+  LiberaBPMRepositoryUrl:
+    Value:
+      !GetAtt LiberaBPMRepository.RepositoryUri
+    Export:
+      Name: !Sub libera-compute-${Stage}-bpm-repository-uri
+
+  LiberaBPMRepository:
+    Value: 
+      !Ref LiberaBPMRepository
+    Export:
+      Name: !Sub libera-compute-${Stage}-bpm-repository

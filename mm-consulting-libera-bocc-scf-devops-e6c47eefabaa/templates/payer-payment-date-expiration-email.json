@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "payer-payment-date-expiration-email",
+        "SubjectPart": "LIBERA - Facturas",
+        "HtmlPart": "<h1>{{payerEnterpriseName}}</h1><p>Le informamos que el vencimiento de la fecha esperada de pago ha vencido de la factura solicitada a <b>{{lenderEnterpriseName}}</b></p><p><b>ID Factura </b>{{invoiceNumber}}<br><b>Valor factura </b>{{amount}}<br><b>Valor Descuento</b>{{discountValue}}<br><b>Valor Efectivo Pagado</b>{{effectivePaymentAmount}}</p><p>Si el pago ha sido realizado antes de esta fecha favor de ponerse en contacto con su proveedor para que valida en su portal esta informacion."
+    }
+}

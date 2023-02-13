@@ -1,0 +1,323 @@
+resources:
+  Resources:
+    ApiGatewayRestApi:
+      Type: AWS::ApiGateway::RestApi 
+      Properties:
+        Name: libera-core-${self:provider.stage}
+
+    S3BucketProfileImageBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: libera-${self:provider.stage}-resources
+        Tags:
+          - Key: centro-de-costos
+            Value:  libera-scf-${self:provider.stage}
+        AccessControl: PublicReadWrite
+        CorsConfiguration:
+          CorsRules:
+          - AllowedOrigins: ['*']
+            AllowedMethods: [POST, GET, PUT, DELETE, HEAD]
+            AllowedHeaders: ['*']
+
+    S3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties: 
+        Bucket: 
+          Ref: S3BucketProfileImageBucket
+        PolicyDocument:
+          Statement: 
+            - 
+              Action: 
+                - "s3:*"
+              Effect: "Allow"
+              Resource: 
+                Fn::Join: 
+                  - ""
+                  - 
+                    - "arn:aws:s3:::"
+                    - 
+                      Ref: S3BucketProfileImageBucket
+              Principal: "*"
+
+    CognitoUserPoolLiberaUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: libera-${self:provider.stage}-user-pool
+        MfaConfiguration: "OFF"
+        LambdaConfig:
+          PreSignUp: 
+            Fn::Join: ["", [ "arn:aws:lambda:", { "Ref": "AWS::Region" }, ':', { Ref: "AWS::AccountId" }, ":function:libera-cognito-${self:provider.stage}-preSignUp" ]]
+          CustomMessage:
+            Fn::Join: ["", [ "arn:aws:lambda:", { "Ref": "AWS::Region" }, ':', { Ref: "AWS::AccountId" }, ":function:libera-cognito-${self:provider.stage}-customMessage" ]]   
+          PreAuthentication:
+            Fn::Join: ["", [ "arn:aws:lambda:", { "Ref": "AWS::Region" }, ':', { Ref: "AWS::AccountId" }, ":function:libera-cognito-${self:provider.stage}-preAuthentication" ]]
+          PostAuthentication:
+            Fn::Join: ["", [ "arn:aws:lambda:", { "Ref": "AWS::Region" }, ':', { Ref: "AWS::AccountId" }, ":function:libera-cognito-${self:provider.stage}-postAuthentication" ]]
+          PostConfirmation:
+            Fn::Join: ["", [ "arn:aws:lambda:", { "Ref": "AWS::Region" }, ':', { Ref: "AWS::AccountId" }, ":function:libera-cognito-${self:provider.stage}-postConfirmation" ]] 
+          PreTokenGeneration:
+            Fn::Join: ["", [ "arn:aws:lambda:", { "Ref": "AWS::Region" }, ':', { Ref: "AWS::AccountId" }, ":function:libera-cognito-${self:provider.stage}-preTokenGeneration" ]] 
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: libera-${self:provider.stage}-user-pool-client
+        UserPoolId:
+          Ref: CognitoUserPoolLiberaUserPool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false
+    CognitoIdentityPool:
+        Type: AWS::Cognito::IdentityPool
+        Properties:
+          IdentityPoolName: libera${self:provider.stage}IdentityPool
+          AllowUnauthenticatedIdentities: false
+          CognitoIdentityProviders:
+            - ClientId:
+                Ref: CognitoUserPoolClient
+              ProviderName:
+                Fn::GetAtt: [ "CognitoUserPoolLiberaUserPool", "ProviderName" ]
+    CognitoIdentityPoolRoles:
+      Type: AWS::Cognito::IdentityPoolRoleAttachment
+      Properties:
+        IdentityPoolId:
+          Ref: CognitoIdentityPool
+        Roles:
+          authenticated:
+            Fn::GetAtt: [CognitoAuthRole, Arn]
+          unauthenticated:
+            Fn::GetAtt: [ CognitoUnAuthorizedRole, Arn ]
+    CognitoUnAuthorizedRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        RoleName: libera-${self:provider.stage}-CognitoUnAuthorizedRole
+        AssumeRolePolicyDocument: 
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal: 
+                Federated: "cognito-identity.amazonaws.com"
+              Action: 
+                - "sts:AssumeRoleWithWebIdentity"
+              Condition:
+                StringEquals: 
+                  "cognito-identity.amazonaws.com:aud":
+                    Ref: CognitoIdentityPool
+                "ForAnyValue:StringLike":
+                  "cognito-identity.amazonaws.com:amr": unauthenticated
+        Policies:
+          - PolicyName: "CognitoUnauthorizedPolicy"
+            PolicyDocument: 
+              Version: "2012-10-17"
+              Statement: 
+                - Effect: "Allow"
+                  Action:
+                    - "mobileanalytics:PutEvents"
+                    - "cognito-sync:*"
+                  Resource: "*"           
+    CognitoAuthRole:
+      Type: AWS::IAM::Role
+      Properties:
+        Path: /
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: 'Allow'
+              Principal:
+                Federated: 'cognito-identity.amazonaws.com'
+              Action:
+                - 'sts:AssumeRoleWithWebIdentity'
+              Condition:
+                StringEquals:
+                  'cognito-identity.amazonaws.com:aud':
+                    Ref: CognitoIdentityPool
+                'ForAnyValue:StringLike':
+                  'cognito-identity.amazonaws.com:amr': authenticated
+        Policies:
+          - PolicyName: 'CognitoAuthorizedPolicy'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: 'Allow'
+                  Action:
+                    - 'mobileanalytics:PutEvents'
+                    - 'cognito-sync:*'
+                    - 'cognito-identity:*'
+                  Resource: '*'
+                - Effect: 'Allow'
+                  Action:
+                    - 'execute-api:Invoke'
+                  Resource:
+                    Fn::Join:
+                      - ''
+                      -
+                        - 'arn:aws:execute-api:'
+                        - Ref: AWS::Region
+                        - ':'
+                        - Ref: AWS::AccountId
+                        - ':'
+                        - Ref: ApiGatewayRestApi
+                        - '/*'
+    QueueLiberaEnterpriseBulk: 
+      Type: AWS::SQS::Queue
+      Properties: 
+        QueueName: libera_enterprise_bulk_queue_${self:provider.stage}
+        Tags:
+          - Key: centro-de-costos
+            Value:  libera-scf-${self:provider.stage}
+    QueueLiberaEnterpriseInvoiceLoad: 
+      Type: AWS::SQS::Queue
+      Properties: 
+        QueueName: libera_enterprise_invoice_load_queue_${self:provider.stage}
+        Tags:
+          - Key: centro-de-costos
+            Value:  libera-scf-${self:provider.stage}
+    QueueLiberaEnterpriseInvoiceBulk: 
+      Type: AWS::SQS::Queue
+      Properties: 
+        QueueName: libera_enterprise_invoices_bulk_queue_${self:provider.stage}
+        Tags:
+          - Key: centro-de-costos
+            Value:  libera-scf-${self:provider.stage}
+    QueueLiberaEnterpriseRequest: 
+      Type: AWS::SQS::Queue
+      Properties: 
+        QueueName: libera_enterprise_request_queue_${self:provider.stage}
+        Tags:
+          - Key: centro-de-costos
+            Value:  libera-scf-${self:provider.stage}
+    QueueLiberaInvoiceFunding: 
+      Type: AWS::SQS::Queue
+      Properties: 
+        QueueName: libera_invoice_funding_queue_${self:provider.stage}
+        Tags:
+          - Key: centro-de-costos
+            Value:  libera-scf-${self:provider.stage}      
+    QueueLiberaInvoiceNegotiation: 
+      Type: AWS::SQS::Queue
+      Properties: 
+        QueueName: libera_invoice_negotiation_queue_${self:provider.stage}
+        Tags:
+          - Key: centro-de-costos
+            Value:  libera-scf-${self:provider.stage}
+    QueueLiberaEnterpriseRecord: 
+      Type: AWS::SQS::Queue
+      Properties: 
+        QueueName: libera_enterprise_record_queue_${self:provider.stage}
+        Tags:
+          - Key: centro-de-costos
+            Value:  libera-scf-${self:provider.stage}
+    # ECRLiberaBPMEngine:
+    #   Type: AWS::ECR::Repository
+    #   Properties:
+    #     RepositoryName: libera-scf/bpmn-engine
+    #     Tags:
+    #       - Key: centro-de-costos
+    #         Value:  libera-scf-${self:provider.stage} 
+        
+  Outputs:
+    apiGatewayRestApiId:
+      Value:
+        Ref: ApiGatewayRestApi
+      Export:
+        Name: libera-${self:provider.stage}-restApiId
+
+    IdentityPoolId:
+      Value:
+        Ref: CognitoIdentityPool
+      Export:
+        Name: libera-${self:provider.stage}-identityPool
+
+    apiGatewayRestApiRootResourceId:
+      Value:
+        Fn::GetAtt:
+          - ApiGatewayRestApi
+          - RootResourceId 
+      Export:
+        Name: libera-${self:provider.stage}--rootResourceId
+
+    UserPoolArn:
+      Value: !GetAtt CognitoUserPoolLiberaUserPool.Arn
+      Export:
+        Name: libera-userpoolarn-${self:provider.stage}
+    UserPoolId:
+      Value: 
+        Ref: CognitoUserPoolLiberaUserPool
+      Export:
+        Name: libera-userpoolId-${self:provider.stage}
+    UserPoolClientId:
+      Value:
+        Ref: CognitoUserPoolClient
+      Export:
+        Name: libera-userpoolClient-${self:provider.stage}
+    QueueLiberaEnterpriseBulkArn: 
+      Value: !GetAtt QueueLiberaEnterpriseBulk.Arn
+      Export:
+        Name: libera-enterprise-bulk-queue-arn-${self:provider.stage}
+    # QueueLiberaEnterpriseBulkUrl: 
+    #   Value: 
+    #     Ref: QueueLiberaEnterpriseBulk
+    #   Export:
+    #     Name: libera-enterprise-bulk-queue-url-${self:provider.stage}
+
+    QueueLiberaEnterpriseInvoiceLoadArn: 
+      Value: !GetAtt QueueLiberaEnterpriseInvoiceLoad.Arn
+      Export:
+        Name: libera-enterprise-invoice-load-queue-arn-${self:provider.stage}
+    # QueueLiberaEnterpriseInvoiceLoadUrl: 
+    #   Value: 
+    #     Ref: QueueLiberaEnterpriseInvoiceLoad
+    #   Export:
+    #     Name: libera-enterprise-invoice-load-queue-url-${self:provider.stage}
+    QueueLiberaEnterpriseInvoiceBulkArn: 
+      Value: !GetAtt QueueLiberaEnterpriseInvoiceBulk.Arn
+      Export:
+        Name: libera-enterprise-invoices-bulk-queue-arn-${self:provider.stage}
+    # QueueLiberaEnterpriseInvoiceBulkUrl: 
+    #   Value: 
+    #     Ref: QueueLiberaEnterpriseInvoiceBulk
+    #   Export:
+    #     Name: libera-enterprise-invoices-bulk-queue-url-${self:provider.stage}
+    QueueLiberaEnterpriseRequestArn: 
+      Value: !GetAtt QueueLiberaEnterpriseRequest.Arn
+      Export:
+        Name: libera-enterprise-request-queue-arn-${self:provider.stage}
+    # QueueLiberaEnterpriseRequestUrl: 
+    #   Value: 
+    #     Ref: QueueLiberaEnterpriseRequest
+    #   Export:
+    #     Name: libera-enterprise-request-queue-url-${self:provider.stage}
+    QueueLiberaInvoiceFundingArn: 
+      Value: !GetAtt QueueLiberaInvoiceFunding.Arn
+      Export:
+        Name: libera-invoice-funding-queue-arn-${self:provider.stage}
+    # QueueLiberaInvoiceFundingUrl: 
+    #   Value: 
+    #     Ref: QueueLiberaInvoiceFunding
+    #   Export:
+    #     Name: libera-invoice-funding-queue-url-${self:provider.stage}
+    QueueLiberaInvoiceNegotiationArn: 
+      Value: !GetAtt QueueLiberaInvoiceNegotiation.Arn
+      Export:
+        Name: libera-invoice-negotiation-queue-arn-${self:provider.stage}
+    # QueueLiberaInvoiceNegotiationUrl: 
+    #   Value: 
+    #     Ref: QueueLiberaInvoiceNegotiation
+    #   Export:
+    #     Name: libera-invoice-negotiation-queue-url-${self:provider.stage}   
+    QueueLiberaEnterpriseRecordArn: 
+      Value: !GetAtt QueueLiberaEnterpriseRecord.Arn
+      Export:
+        Name: libera-enterprise-record-queue-arn-${self:provider.stage}
+    # QueueLiberaEnterpriseRecordUrl: 
+    #   Value: 
+    #     Ref: QueueLiberaEnterpriseRecord
+    #   Export:
+    #     Name: libera-enterprise-record-queue-url-${self:provider.stage}  
+
+    #
+    # ECRLiberaBPMEngineArn:
+    #   Value: !GetAtt ECRLiberaBPMEngine.Arn

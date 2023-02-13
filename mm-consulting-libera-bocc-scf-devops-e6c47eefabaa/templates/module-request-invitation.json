@@ -1,0 +1,8 @@
+{
+    "Template": {
+        "TemplateName": "module-request-invitation",
+        "SubjectPart": "{{enterpriseName}}: ",
+        "TextPart": "Si tiene alguna duda contactenos via soporte",
+        "HtmlPart": "<h1> Invitacion para realizar una solicitud de Modulo.</h1><br><p><b>LIBERA</b> le invita a que forme parte de nuestra plaforma como un {{module}} y obtenga beneficios adicionales.</p><p> De click en  la siguiente liga,  para conocer todos los beneficios y realizar su solicitud. <br>{{frontUrl}}</p> "
+    }
+}

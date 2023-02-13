@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "enterprise-documentation-admin-request",
+        "SubjectPart": "Libera - Notificación de documento rechazado",
+        "HtmlPart": "<p><strong>{{enterpriseName}}</strong>, le informamos que el documento <strong><i>{{documentName}}</i></strong> ha sido rechazado por el siguientes motivos:</p> <p>{{explanation}}</p> <p>Le pedimos de manera atenta vuelva a cargar el documento actualizado.</p>"
+    }
+}

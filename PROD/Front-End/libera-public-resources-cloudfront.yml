@@ -1,0 +1,81 @@
+Parameters:
+  stage:
+    Description: The stage for these resources
+    Type: String
+Resources:        
+  DistributionCloudFrontLiberaPublicResources:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: 
+              !Join
+                - ''
+                ##- - !ImportValue bucket-libera-cloudfront-prod
+                - - Fn::ImportValue: 
+                      !Sub "bucket-libera-cloudfront-${stage}"
+                  - .s3.amazonaws.com
+            #Id: libera-public-resources-cloudfront-prod
+            Id: !Sub "libera-public-resources-cloudfront-${stage}"
+            OriginPath: /resources
+            S3OriginConfig:
+              OriginAccessIdentity:
+                !Join
+                  - ''
+                  - - origin-access-identity/cloudfront/
+                    ##- !ImportValue oai-libera-cloudfront-prod
+                    - Fn::ImportValue: 
+                        !Sub "oai-libera-cloudfront-${stage}"
+        Enabled: true
+        HttpVersion: http2
+        DefaultCacheBehavior:
+          AllowedMethods: 
+            - HEAD
+            - GET
+          CachedMethods:
+            - HEAD
+            - GET
+          ForwardedValues:
+            Headers:
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+              - Origin
+            QueryString: false
+          ##TargetOriginId: libera-public-resources-cloudfront-prod
+          TargetOriginId: !Sub "libera-public-resources-cloudfront-${stage}"
+          MinTTL: 86400
+          ViewerProtocolPolicy: allow-all
+        CacheBehaviors:
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: index.html
+            SmoothStreaming: false
+            ##TargetOriginId: libera-public-resources-cloudfront-prod
+            TargetOriginId: !Sub "libera-public-resources-cloudfront-${stage}"
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+        PriceClass: PriceClass_100
+      Tags:
+        - Key: centro-de-costos
+          ##Value:  libera-scf-prod
+          Value: !Sub "libera-scf-${stage}"
+
+Outputs:
+  LiberaPublicResourcesCloudFrontDomain:
+    Value: !GetAtt DistributionCloudFrontLiberaPublicResources.DomainName
+    Export:
+      ##Name: libera-public-resources-domain-prod
+      Name: !Sub "libera-public-resources-domain-${stage}"

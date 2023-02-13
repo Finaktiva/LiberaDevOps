@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "payment-confirmation-provider-email",
+        "SubjectPart": "LIBERA - Facturas",
+        "HtmlPart": "<h1>{{providerEnterpriseName}}</h1><p>En respuesta a la solicitud de fondeo realizada a <b>{{lenderEnterpriseName}}</b> le informamos que ha sido confirmado el pago de su factura.</p><p><b>ID Factura </b>{{invoiceNumber}}<br><b>Valor factura </b>{{amount}}<br><b>Valor Descuento</b>{{discountValue}}<br><b>Valor Efectivo Pagado</b>{{effectivePaymentAmount}}</p><p>Para mas detalles revise el detalle de la factura.</p>"
+    }
+}

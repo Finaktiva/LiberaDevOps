@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "lender-funding-request-reminder-email",
+        "SubjectPart": "LIBERA - Recordatorio, solicitud de Pago de Factura",
+        "HtmlPart": "<h1>{{lenderEnterpriseName}}</h1><p>Le informamos que tiene pendiente el pago de una factura solicitada por <b>{{payerEnterpriseName}}</b>.</p><p><b>ID Factura: </b>{{invoiceNumber}}<br><b>Valor de la factura: </b>{{amount}}<br><b>Valor del descuento: </b> {{discountValue}}</p><p>Para mas detalle revise su seccion de solicitudes.</p>"
+    }
+}

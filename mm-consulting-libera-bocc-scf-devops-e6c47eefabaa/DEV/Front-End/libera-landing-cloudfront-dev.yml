@@ -1,0 +1,161 @@
+Resources:
+  DistributionCloudFrontLiberaLandingDev:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName:
+              !Join
+                - ''
+                - - !ImportValue bucket-libera-cloudfront-dev
+                  - .s3.amazonaws.com
+            Id: libera-landing-cloudfront-dev
+            OriginPath: /landing
+            S3OriginConfig:
+              OriginAccessIdentity:
+                !Join
+                  - ''
+                  - - origin-access-identity/cloudfront/
+                    - !ImportValue oai-libera-cloudfront-dev
+
+          - DomainName: !ImportValue libera-enterprise-domain-dev
+            Id: libera-enterprise-cloudfront-dev
+            CustomOriginConfig:
+              OriginProtocolPolicy: match-viewer
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginKeepaliveTimeout: 5
+              OriginReadTimeout: 30
+          - DomainName: !ImportValue libera-admin-domain-dev
+            Id: libera-admin-cloudfront-dev
+            CustomOriginConfig:
+              OriginProtocolPolicy: match-viewer
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginKeepaliveTimeout: 5
+              OriginReadTimeout: 30
+        DefaultRootObject: index.html
+        CustomErrorResponses:
+          - ErrorCode: '404'
+            ResponseCode: '200'
+            ErrorCachingMinTTL: '30'
+            ResponsePagePath: "/index.html"
+        Enabled: true
+        HttpVersion: http2
+        DefaultCacheBehavior:
+          AllowedMethods: 
+            - HEAD
+            - GET
+          CachedMethods:
+            - HEAD
+            - GET
+          ForwardedValues:
+            Headers:
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+              - Origin
+            QueryString: false
+          TargetOriginId: libera-landing-cloudfront-dev
+          MinTTL: 86400
+          ViewerProtocolPolicy: allow-all
+        CacheBehaviors:
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: /admin
+            SmoothStreaming: false
+            TargetOriginId: libera-admin-cloudfront-dev
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: /admin/*
+            SmoothStreaming: false
+            TargetOriginId: libera-admin-cloudfront-dev
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: /enterprise
+            SmoothStreaming: false
+            TargetOriginId: libera-enterprise-cloudfront-dev
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: /enterprise/*
+            SmoothStreaming: false
+            TargetOriginId: libera-enterprise-cloudfront-dev
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: index.html
+            SmoothStreaming: false
+            TargetOriginId: libera-landing-cloudfront-dev
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false

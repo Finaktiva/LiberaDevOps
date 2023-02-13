@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "new-counteroffer-email",
+        "SubjectPart": "LIBERA - Tienes una nueva contraoferta de negociacion",
+        "HtmlPart": "<h3>{{enterpriseName}}:</h3><br><p>Le informamos que la empresa {{counterofferingEnterprise}} le ha enviado una contraoferta de la factura con la siguiente propuesta:</p><br><p><b>ID Factura: </b> {{invoiceNumber}}<br><b>Valor Factura: </b> ${{invoiceValue}}<br><b>Tasa de descuento: </b> {{percentage}}%<br><b>Tipo de descuento: </b> {{discountType}}<br><b>Valor del descuento: </b> {{discountValue}}<br><b>Vigencia del descuento:</b> {{discountDueDate}}<br>"
+    }
+}

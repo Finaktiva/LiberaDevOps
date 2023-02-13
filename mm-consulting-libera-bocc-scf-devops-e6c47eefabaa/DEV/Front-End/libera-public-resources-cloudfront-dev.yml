@@ -1,0 +1,65 @@
+Resources:        
+  DistributionCloudFrontLiberaPublicResourcesDev:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: 
+              !Join
+                - ''
+                - - !ImportValue bucket-libera-cloudfront-dev
+                  - .s3.amazonaws.com
+            Id: libera-public-resources-cloudfront-dev
+            OriginPath: /resources
+            S3OriginConfig:
+              OriginAccessIdentity:
+                !Join
+                  - ''
+                  - - origin-access-identity/cloudfront/
+                    - !ImportValue oai-libera-cloudfront-dev
+        Enabled: true
+        HttpVersion: http2
+        DefaultCacheBehavior:
+          AllowedMethods: 
+            - HEAD
+            - GET
+          CachedMethods:
+            - HEAD
+            - GET
+          ForwardedValues:
+            Headers:
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+              - Origin
+            QueryString: false
+          TargetOriginId: libera-public-resources-cloudfront-dev
+          MinTTL: 86400
+          ViewerProtocolPolicy: allow-all
+        CacheBehaviors:
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: index.html
+            SmoothStreaming: false
+            TargetOriginId: libera-public-resources-cloudfront-dev
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+
+Outputs:
+  
+  LiberaPublicResourcesCloudFrontDomainDev:
+    Value: !GetAtt DistributionCloudFrontLiberaPublicResourcesDev.DomainName
+    Export:
+      Name: libera-public-resources-domain-dev

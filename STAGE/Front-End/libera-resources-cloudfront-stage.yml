@@ -1,0 +1,42 @@
+Resources:
+  CommonBucketCloudFrontliberaStage:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: libera-cloudfront-stage
+      AccessControl: PublicRead
+    
+  CommonCloudFrontOAILiberaStage:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: "CloudFront Origin Access Identity Stage"
+        
+  CommonBucketPolicyCloudFrontLiberaStage:
+    Type: AWS::S3::BucketPolicy
+    Properties: 
+      Bucket:
+        Ref: CommonBucketCloudFrontliberaStage
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              CanonicalUser:
+                Fn::GetAtt: [ CommonCloudFrontOAILiberaStage , S3CanonicalUserId ]
+            Action: "s3:GetObject"
+            Resource: !Sub "${CommonBucketCloudFrontliberaStage.Arn}/*"
+
+Outputs:
+  CommonBucketCloudFrontLiberaStage:
+    Description: bucket for all cloudfront resources
+    Value:
+      Ref: CommonBucketCloudFrontliberaStage
+    Export:
+      Name: bucket-libera-cloudfront-stage
+
+  CommonCloudFrontOAILiberaStage:
+    Description: Origin Access Identities for all cloudfront resources
+    Value:
+      Ref: CommonCloudFrontOAILiberaStage
+    Export:
+      Name: oai-libera-cloudfront-stage

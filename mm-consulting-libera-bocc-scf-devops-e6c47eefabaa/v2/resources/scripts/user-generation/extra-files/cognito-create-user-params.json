@@ -1,0 +1,24 @@
+
+[
+    {
+      "Name": "email_verified",
+      "Value": "true"
+    },
+    {
+      "Name": "email",
+      "Value": "liberaadmin2@yopmail.com"
+    },
+    {
+      "Name": "custom:userType",
+      "Value": "LIBERA_USER"
+    },
+    {
+      "Name": "custom:status",
+      "Value": "ENABLED"
+    },
+    {
+      "Name": "custom:roles",
+      "Value": "[\"ADMIN_LIBERA\"]"
+    }
+  ]
+

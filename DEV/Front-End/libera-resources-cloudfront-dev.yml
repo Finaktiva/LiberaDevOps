@@ -1,0 +1,42 @@
+Resources:
+  CommonBucketCloudFrontliberaDev:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: libera-cloudfront-dev
+      AccessControl: PublicRead
+    
+  CommonCloudFrontOAILiberaDev:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: "CloudFront Origin Access Identity Dev"
+        
+  CommonBucketPolicyCloudFrontLiberaDev:
+    Type: AWS::S3::BucketPolicy
+    Properties: 
+      Bucket:
+        Ref: CommonBucketCloudFrontliberaDev
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              CanonicalUser:
+                Fn::GetAtt: [ CommonCloudFrontOAILiberaDev , S3CanonicalUserId ]
+            Action: "s3:GetObject"
+            Resource: !Sub "${CommonBucketCloudFrontliberaDev.Arn}/*"
+
+Outputs:
+  CommonBucketCloudFrontLiberaDev:
+    Description: bucket for all cloudfront resources
+    Value:
+      Ref: CommonBucketCloudFrontliberaDev
+    Export:
+      Name: bucket-libera-cloudfront-dev
+
+  CommonCloudFrontOAILiberaDev:
+    Description: Origin Access Identities for all cloudfront resources
+    Value:
+      Ref: CommonCloudFrontOAILiberaDev
+    Export:
+      Name: oai-libera-cloudfront-dev

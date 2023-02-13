@@ -1,0 +1,8 @@
+{
+    "Template": {
+        "TemplateName": "enterprise-module-request-declined",
+        "SubjectPart": "LIBERA - Registro de Empresas",
+        "TextPart": "Si tiene alguna duda porfavor contectenos.",
+        "HtmlPart": "<h1> Resultado de registro</h1><br><p>Estimado {{enterpriseName}}Le informamos que su solicitud del modulo {{moduleRequested}} no a sido aceptada.</p><p>Fue rechazada por los siguientes motivos: {{explanation}}"
+    }
+}

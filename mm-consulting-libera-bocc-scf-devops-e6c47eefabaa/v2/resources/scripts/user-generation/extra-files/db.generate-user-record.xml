@@ -1,0 +1,48 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+									 xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" 
+									 xmlns:pro="http://www.liquibase.org/xml/ns/pro" 
+									 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+									 xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    
+    <changeSet author="festrada" id="Creacion Inicial">
+    
+	    <insert dbms="mysql" tableName="USER">  
+	        <column name="EMAIL" value="${email}"/>
+	        <column name="STATUS" value="ENABLED" />
+	        <column name="CREATION_DATE" value="now()"/>
+	        <column name="MODIFICATION_DATE" value="now()"/>
+	        <column name="AFFILIATION_ACCEPTANCE_DATE" value="now()"/>
+	        <column name="TYPE" value="LIBERA_USER"/>
+    	</insert> 
+
+    	<insert dbms="mysql" tableName="USER_PROPERTIES">  
+	        <column name="USER_ID" value="1"/>
+	        <column name="NAME" value="${name}" />
+	        <column name="FIRST_SURNAME" value="${surname}"/>
+	        <column name="SECOND_SURNAME" value="${secondSurname}"/>
+	        <column name="CREATED_DATE" value="now()"/>
+	        <column name="MODIFIED_DATE" value="now()"/>
+    	</insert> 
+
+    	<insert dbms="mysql" tableName="USER_ROLE">  
+	        <column name="USER_ID" value="1"/>
+	        <column name="ROLE" value="LIBERA_ADMIN" />
+    	</insert> 
+
+    	<insert dbms="mysql" tableName="USER_MODULE">  
+	        <column name="USER_ID" value="1"/>
+	        <column name="MODULE" value="ADMIN" />
+    	</insert> 
+
+    	<rollback>
+				TRUNCATE TABLE USER_MODULE;
+				TRUNCATE TABLE USER_ROLE;
+				TRUNCATE TABLE USER_PROPERTIES;
+				DELETE FROM USER;
+				ALTER TABLE USER AUTO_INCREMENT = 1;
+			</rollback>
+
+    </changeSet>
+
+  </databaseChangeLog>

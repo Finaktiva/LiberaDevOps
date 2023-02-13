@@ -1,0 +1,53 @@
+Parameters:
+  stage:
+    Description: The stage for these resources
+    Type: String
+Resources:
+  CommonBucketCloudFrontLibera:
+    Type: AWS::S3::Bucket
+    Properties:
+      ##BucketName: libera-cloudfront-prod
+      BucketName: !Join ["", [libera-cloudfront-, !Ref stage]]
+      Tags:
+        - Key: centro-de-costos
+          ##Value:  libera-scf-prod
+          Value:  !Join ["",[libera-scf-, !Ref stage]]
+      AccessControl: PublicRead
+    
+  CommonCloudFrontOAILibera:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: "CloudFront Origin Access Identity"
+        
+  CommonBucketPolicyCloudFrontLibera:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: CommonBucketCloudFrontLibera
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              CanonicalUser:
+                Fn::GetAtt: [ CommonCloudFrontOAILibera , S3CanonicalUserId ]
+            Action: "s3:GetObject"
+            Resource: !Sub "${CommonBucketCloudFrontLibera.Arn}/*"
+
+Outputs:
+  CommonBucketCloudFrontLibera:
+    Description: bucket for all cloudfront resources
+    Value:
+      Ref: CommonBucketCloudFrontLibera
+    Export:
+      ##Name: bucket-libera-cloudfront-prod
+      Name: !Join ["",[bucket-libera-cloudfront-, !Ref stage]]
+
+  CommonCloudFrontOAILibera:
+    Description: Origin Access Identities for all cloudfront resources
+    Value:
+      Ref: CommonCloudFrontOAILibera
+    Export:
+      ##Name: oai-libera-cloudfront-prod
+      Name: !Join ["",[oai-libera-cloudfront-, !Ref stage]]

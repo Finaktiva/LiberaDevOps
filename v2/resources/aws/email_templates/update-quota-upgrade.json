@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "update-quota-upgrade",
+        "SubjectPart": "LIBERA Cupos",
+        "HtmlPart": "<h1>{{lenderEnterpriseName}}</h1><p>{{payerEnterpriseName}} le solicita el incrementar el cupo asignado por la cantidad de:</p><p><h2>{{requestAmount}}</h2></p><p>Para mÃ¡s detalle revise su seccion de solicitudes</p>"
+    }
+}

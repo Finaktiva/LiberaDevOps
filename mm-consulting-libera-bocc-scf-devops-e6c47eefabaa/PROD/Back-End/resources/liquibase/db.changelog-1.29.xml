@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog/1.9"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog/1.9
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-1.9.xsd">
+
+	<changeSet author="omar-ramirez" id="changelog-1.29">
+		<!-- Changes tag -->
+		<tagDatabase tag="tag-1.29" />
+	</changeSet>
+
+	<changeSet author="omar-ramirez" id="changelog-1.29.1">
+			<!-- Change set for Catalogs DDL -->
+	</changeSet>
+
+	<changeSet author="omar-ramirez" id="changelog-1.29.2">
+		<!-- Change set for Catalogs DML (Must include custom rollback for 
+			this changes) -->
+		<update tableName="CAT_DOCUMENT_TYPE">
+            <column name="DESCRIPTION" value="Formulario de matrícula"/>
+						<column name="TEMPLATE_URL" value="https://libera-cloudfront-dev.s3-us-east-1.amazonaws.com/resources/back/document-templates/ENROLLMENT_FORM.pdf"/>
+						<where> CODE='ENROLLMENT_FORM' </where>
+        </update>
+		
+		<update tableName="CAT_DOCUMENT_TYPE">
+            <column name="DESCRIPTION" value="Cámara de comercio vigente"/>
+						<column name="TEMPLATE_URL" value=""/>
+						<where> CODE ='CHAMBER_OF_COMMERCE_CERTIFICATE' </where>
+        </update>
+		
+		<update tableName="CAT_DOCUMENT_TYPE">            
+            <column name="DESCRIPTION" value="Copia cédula del representate legal"/>
+						<column name="TEMPLATE_URL" value=""/>
+						<where> CODE ='LEGAL_REPRESENTATIVE_ID' </where>
+        </update>
+		
+		<update tableName="CAT_DOCUMENT_TYPE">	            
+            <column name="DESCRIPTION" value="RUT"/>
+						<column name="TEMPLATE_URL" value=""/>
+						<where> CODE ='RUT' </where>
+        </update>
+		
+		<update tableName="CAT_DOCUMENT_TYPE">            
+            <column name="DESCRIPTION" value="Acuerdo pagador"/>
+						<column name="TEMPLATE_URL" value="https://libera-cloudfront-dev.s3-us-east-1.amazonaws.com/resources/back/document-templates/PAYER_AGREEMENT.pdf"/>
+						<where> CODE ='PAYER_AGREEMENT' </where>
+        </update>
+		
+		<update tableName="CAT_DOCUMENT_TYPE">            
+            <column name="DESCRIPTION" value="Acuerdo proveedor"/>
+						<column name="TEMPLATE_URL" value="https://libera-cloudfront-dev.s3-us-east-1.amazonaws.com/resources/back/document-templates/PROVIDER_AGREEMENT.pdf"/>
+						<where> CODE ='PROVIDER_AGREEMENT' </where>
+        </update>
+		
+		<update tableName="CAT_DOCUMENT_TYPE">            
+            <column name="DESCRIPTION" value="Acuerdo Fondeador"/>
+						<column name="TEMPLATE_URL" value="https://libera-cloudfront-dev.s3-us-east-1.amazonaws.com/resources/back/document-templates/FUNDING_AGREEMENT.pdf"/>
+						<where> CODE ='FUNDING_AGREEMENT' </where>
+        </update>
+		
+		<update tableName="CAT_DOCUMENT_TYPE">            
+            <column name="DESCRIPTION" value="Composición accionaria"/>
+						<column name="TEMPLATE_URL" value=""/>
+						<where> CODE ='SHAREHOLDING_STRUCTURE' </where>
+        </update>
+
+		<insert tableName="CAT_MODULE_DOCUMENTATION">
+						<column name="NAME" value="FUNDING"/>
+						<column name="CODE" value="FUNDING_AGREEMENT"/>
+				</insert>
+
+		<insert tableName="CAT_MODULE_DOCUMENTATION">
+						<column name="NAME" value="PAYER"/>
+						<column name="CODE" value="PAYER_AGREEMENT"/>
+				</insert>
+		
+		<insert tableName="CAT_MODULE_DOCUMENTATION">
+						<column name="NAME" value="PROVIDER"/>
+						<column name="CODE" value="PROVIDER_AGREEMENT"/>
+				</insert>
+				
+		<update tableName="CAT_MODULE">						
+						<column name="DESCRIPTION" value="administrador"/>
+						<where> NAME ='ADMIN' </where>
+				</update>
+		
+		<update tableName="CAT_MODULE">
+						<column name="DESCRIPTION" value="fondeador"/>
+						<where> NAME ='FUNDING' </where>
+				</update>
+		
+		<update tableName="CAT_MODULE">
+						<column name="DESCRIPTION" value="pagador"/>
+						<where> NAME ='PAYER' </where>
+				</update>
+
+		<update tableName="CAT_MODULE">
+						<column name="DESCRIPTION" value="proveedor"/>
+						<where> NAME ='PROVIDER' </where>
+				</update>
+
+		<update tableName="CAT_NOTIFICATION_TYPE">
+						<column name="DESCRIPTION" value="module request"/>
+						<where> CODE = 'MODULE_REQUEST' </where>
+				</update>
+
+		<update tableName="CAT_NOTIFICATION_TYPE">
+						<column name="DESCRIPTION" value="New Request"/>
+						<where> CODE = 'NEW_REQUEST' </where>
+				</update>
+
+		<update tableName="ROLE">
+						<column name="DESCRIPTION" value="Administrador de empresa"/>
+						<where> NAME = 'ENTERPRISE_CONSOLE_ADMIN' </where>
+				</update>
+		
+		<update tableName="ROLE">
+						<column name="DESCRIPTION" value="Administrador de módulo fondeador"/>
+						<where> NAME = 'ENTERPRISE_FUNDING_ADMIN' </where>
+				</update>
+
+		<update tableName="ROLE">
+						<column name="DESCRIPTION" value="Administrador de módulo pagador"/>
+						<where> NAME = 'ENTERPRISE_PAYER_ADMIN' </where>
+				</update>
+
+		<update tableName="ROLE">
+						<column name="DESCRIPTION" value="Administrador de módulo proveedor"/>
+						<where> NAME = 'ENTERPRISE_PROVIDER_ADMIN' </where>
+				</update>
+
+		<update tableName="ROLE">
+						<column name="DESCRIPTION" value="Administrador de Libera"/>
+						<where> NAME = 'LIBERA_ADMIN' </where>
+				</update>
+
+		<update tableName="ROLE">
+						<column name="DESCRIPTION" value="Colaborador de Libera"/>
+						<where> NAME = 'LIBERA_COLLABORATOR' </where>
+				</update>
+
+		<update tableName="ROLE">
+						<column name="DESCRIPTION" value="Gerente de programa de Libera"/>
+						<where> NAME = 'LIBERA_PROGRAM_MANAGER' </where>
+				</update>
+
+		<update tableName="ROLE">
+						<column name="DESCRIPTION" value="Gerente de proveedor de Libera"/>
+						<where> NAME = 'LIBERA_PROVIDER_MANAGER' </where>
+				</update>
+
+		<update tableName="ROLE">
+						<column name="DESCRIPTION" value="Gerente de usuario de Libera"/>
+						<where> NAME = 'LIBERA_USER_MANAGER' </where>
+				</update>
+
+	</changeSet>
+
+	<changeSet author="omar-ramirez" id="changelog-1.29.3">
+		<!-- Change set for Other Tables DDL -->
+
+		<dropForeignKeyConstraint 
+			baseTableName="REQUEST" 
+			constraintName="FK_REQUEST_0"/>
+		
+		<dropForeignKeyConstraint 
+			baseTableName="REQUEST" 
+			constraintName="FK_REQUEST_1"/>	
+		
+		<dropTable tableName="REQUEST" />
+		<dropTable tableName="REQUEST_TYPE" />
+
+	</changeSet>
+
+	<changeSet author="omar-ramirez" id="changelog-1.29.4">
+		<!-- Change set for Other Tables DML (Must include custom rollback for 
+			this changes) -->
+	</changeSet>
+
+</databaseChangeLog> 

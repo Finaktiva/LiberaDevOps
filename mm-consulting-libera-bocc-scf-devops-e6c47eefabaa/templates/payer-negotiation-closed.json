@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "payer-negotiation-closed",
+        "SubjectPart": "LIBERA - Tu oferta ha sido cerrada",
+        "HtmlPart": "<h3>{{payerEnterpriseName}}:</h3><br><p>Te informamos que la negociacion con la empresa {{enterpriseName}} no se completo y esta ahora se encuentra cerrada. Los detalles de la negociación fueron los siguientes:</p><br><p><b>Factura:</b>{{invoiceNumber}}<br> <b>Tasa de descuento:</b> {{percentage}}<br> <b>Tipo de descuento:</b> {{discountType}} <br> <b>Valor del descuento: </b> {{discountValue}}<br> <b>Vigencia del descuento:</b> {{discountDays}} <br> <b>Fecha efectiva de pago: </b> {{expectedPaymentDate}} </p> <br>"
+    }
+}

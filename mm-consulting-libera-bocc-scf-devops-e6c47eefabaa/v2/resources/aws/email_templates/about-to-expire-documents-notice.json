@@ -1,0 +1,7 @@
+{
+  "Template": {
+      "TemplateName": "about-to-expire-documents-notice",
+      "SubjectPart": "Documentos próximos a vencer Factoring Banco de Occidente",
+      "HtmlPart": "<p>Buen d&iacute;a,</p><p>Informamos que los siguientes documentos est&aacute;n pr&oacute;ximos a vencer en la plataforma &#60;&#60;Factoring Banco de Occidente&#62;&#62; le recomendamos actualizarlos para continuar con sus operaciones sin inconvenientes:</p><table border='1'><thead style='background-color:#d9d9d9;'><th>Documento</th><th>Dias que le quedan de vigencia</th><th>Fecha de expiraci&oacute;n</th><th>Accion para realizar</th></thead><tbody>{{#each documents}}<tr><td>{{nameDocument}}</td><td>{{daysLeft}}</td><td>{{effectivenessDate}}</td><td>Actualizar</td></tr>{{/each}}</tbody></table><p align='justify'>Cordialmente,</p><p><b>&Aacute;rea de Factoring y Unidirecto</b></p>"
+  }
+}

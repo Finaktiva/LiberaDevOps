@@ -1,0 +1,86 @@
+Parameters:
+  stage:
+    Description: The stage for these resources
+    Type: String
+Resources:  
+  DistributionCloudFrontLiberaAdmin:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: 
+              !Join
+                - ''
+                ##- - !ImportValue bucket-libera-cloudfront-prod
+                - - Fn::ImportValue: 
+                      !Sub "bucket-libera-cloudfront-${stage}"
+                  - .s3.amazonaws.com
+            ##Id: libera-admin-cloudfront-prod
+            Id: !Join ["", [libera-admin-cloudfront-, !Ref stage]]
+            S3OriginConfig:
+              OriginAccessIdentity:
+                !Join
+                  - ''
+                  - - origin-access-identity/cloudfront/
+                    ## - !ImportValue oai-libera-cloudfront-prod
+                    - Fn::ImportValue: 
+                        !Sub "oai-libera-cloudfront-${stage}"
+        DefaultRootObject: admin/index.html
+        CustomErrorResponses:
+          - ErrorCode: '404'
+            ResponseCode: '200'
+            ErrorCachingMinTTL: '30'
+            ResponsePagePath: "/admin/index.html"
+        Enabled: true
+        HttpVersion: http2
+        DefaultCacheBehavior:
+          AllowedMethods: 
+            - HEAD
+            - GET
+          CachedMethods:
+            - HEAD
+            - GET
+          ForwardedValues:
+            Headers:
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+              - Origin
+            QueryString: false
+          ##TargetOriginId: libera-admin-cloudfront-prod
+          TargetOriginId: !Join ["", [libera-admin-cloudfront-, !Ref stage]]
+          MinTTL: 86400
+          ViewerProtocolPolicy: allow-all
+        CacheBehaviors:
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: index.html
+            SmoothStreaming: false
+            ##TargetOriginId: libera-admin-cloudfront-prod
+            TargetOriginId: !Join ["", [libera-admin-cloudfront-, !Ref stage]]
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+        ## Price Class indica que no se replicará el cloud front en todo el mundo solo en las ubicaciones de este priceClass
+        PriceClass: PriceClass_100
+      Tags:
+        - Key: centro-de-costos
+          Value: !Join ["",[libera-scf-, !Ref stage]]
+Outputs:
+  LiberaAdminCloudFrontDomain:
+    Value: !GetAtt DistributionCloudFrontLiberaAdmin.DomainName
+    Export:
+      ##Name: libera-admin-domain-prod
+      Name: !Join ["",[libera-admin-domain-, !Ref stage]]
+

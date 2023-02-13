@@ -1,0 +1,68 @@
+service: libera-environment
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: ${opt:region, 'us-west-2'}
+  stage: ${opt:stage, 'dev'}
+  memorySize: 128
+  timeout: 3
+  resourcePolicy:
+    - Effect: Allow
+      Principal: "*"
+      Action: execute-api:Invoke
+      Resource:
+        - execute-api:/*/*/*
+
+plugins:
+    - serverless-cognito-add-custom-attributes
+
+custom:
+  CognitoAddCustomAttributes: 
+    CognitoUserPoolIdOutputKey: "UserPoolId"   
+    CognitoUserPoolClientIdOutputKey: "UserPoolClientId"
+    CustomAttributes: 
+      - 
+        AttributeDataType: String
+        DeveloperOnlyAttribute: False
+        Mutable: True
+        Name: "business_name" 
+        Required: False
+      - 
+        AttributeDataType: String
+        DeveloperOnlyAttribute: False
+        Mutable: True
+        Name: "nit" 
+        Required: False
+      - 
+        AttributeDataType: String
+        DeveloperOnlyAttribute: False
+        Mutable: True
+        Name: "roles" 
+        Required: False
+      -
+        AttributeDataType: String
+        DeveloperOnlyAttribute: False
+        Mutable: True
+        Name: "status" 
+        Required: False
+      -
+        AttributeDataType: String
+        DeveloperOnlyAttribute: False
+        Mutable: True
+        Name: "modules"
+        Required: False
+      -
+        AttributeDataType: String
+        DeveloperOnlyAttribute: False
+        Mutable: True
+        Name: "enterpriseId"
+        Required: False
+      -
+        AttributeDataType: String
+        DeveloperOnlyAttribute: False
+        Mutable: True
+        Name: "userType"
+        Required: False
+
+resources: ${file(../properties/resources.yml):resources}

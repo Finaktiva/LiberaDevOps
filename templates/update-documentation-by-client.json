@@ -1,0 +1,7 @@
+{
+  "Template": {
+      "TemplateName": "update-documentation-by-client",
+      "SubjectPart": "Actualización documental {{enterpriseName}}",
+      "HtmlPart": "<p>El cliente {{clientName}} ha actualizado los siguientes documentos, por favor ingrese a la plataforma para realizar la aprobaci&oacute;n:</p><table border='1'><thead style='background-color: #d9d9d9;'></thead><tbody>{{#each documents}}<tr><td>{{nameDocument}}</td></tr>{{/each}}</tbody></table>"
+  }
+}

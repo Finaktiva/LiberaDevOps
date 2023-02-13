@@ -1,0 +1,395 @@
+Parameters:
+  Stage:
+    Description: Resources for frontend application infraestructure 
+    Type: String
+Resources:
+  # Common Resouces
+  CommonBucketCloudFrontLibera:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub libera-cloudfront-${Stage}   
+      Tags:
+        - Key: centro-de-costos
+          Value: !Sub  libera-scf-${Stage}
+      AccessControl: PublicRead
+    
+  CommonCloudFrontOAILibera:
+    Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+    Properties:
+      CloudFrontOriginAccessIdentityConfig:
+        Comment: "CloudFront Origin Access Identity"
+        
+  CommonBucketPolicyCloudFrontLibera:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket:
+        Ref: CommonBucketCloudFrontLibera
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              CanonicalUser:
+                !GetAtt CommonCloudFrontOAILibera.S3CanonicalUserId
+            Action: "s3:GetObject"
+            Resource: !Sub "${CommonBucketCloudFrontLibera.Arn}/*"
+
+  # Public Resources (unified Cloudfront distribution)
+  DistributionCloudFrontLiberaPublicResources:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: 
+              !GetAtt CommonBucketCloudFrontLibera.DomainName   
+            Id: !Sub libera-public-resources-cloudfront-${Stage}
+            OriginPath: /resources
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CommonCloudFrontOAILibera}
+        Enabled: true
+        HttpVersion: http2
+        DefaultCacheBehavior:
+          AllowedMethods: 
+            - HEAD
+            - GET
+          CachedMethods:
+            - HEAD
+            - GET
+          ForwardedValues:
+            Headers:
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+              - Origin
+            QueryString: false
+          TargetOriginId: !Sub libera-public-resources-cloudfront-${Stage}
+          MinTTL: 86400
+          ViewerProtocolPolicy: allow-all
+        CacheBehaviors:
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: index.html
+            SmoothStreaming: false
+            TargetOriginId: !Sub libera-public-resources-cloudfront-${Stage}
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+        PriceClass: PriceClass_100
+      Tags:
+        - Key: centro-de-costos
+          Value: !Sub libera-scf-${Stage}
+
+  # Enterprise Distribution
+  DistributionCloudFrontLiberaEnterprise:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: 
+              !GetAtt CommonBucketCloudFrontLibera.DomainName   
+            Id: !Sub libera-enterprise-cloudfront-${Stage}
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CommonCloudFrontOAILibera}
+        DefaultRootObject: enterprise/index.html
+        CustomErrorResponses:
+          - ErrorCode: '404'
+            ResponseCode: '200'
+            ErrorCachingMinTTL: '30'
+            ResponsePagePath: "/enterprise/index.html"
+        Enabled: true
+        HttpVersion: http2
+        DefaultCacheBehavior:
+          AllowedMethods: 
+            - HEAD
+            - GET
+          CachedMethods:
+            - HEAD
+            - GET
+          ForwardedValues:
+            Headers:
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+              - Origin
+            QueryString: false
+          TargetOriginId: !Sub libera-enterprise-cloudfront-${Stage}
+          MinTTL: 86400
+          ViewerProtocolPolicy: allow-all
+        CacheBehaviors:
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: index.html
+            SmoothStreaming: false
+            TargetOriginId: !Sub libera-enterprise-cloudfront-${Stage}
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+        PriceClass: PriceClass_100
+      Tags:
+        - Key: centro-de-costos
+          Value: !Sub libera-scf-${Stage}
+  
+  # Admin Distribution
+  DistributionCloudFrontLiberaAdmin:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: 
+              !GetAtt CommonBucketCloudFrontLibera.DomainName
+            Id: !Sub libera-admin-cloudfront-${Stage}
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CommonCloudFrontOAILibera}
+        DefaultRootObject: admin/index.html
+        CustomErrorResponses:
+          - ErrorCode: '404'
+            ResponseCode: '200'
+            ErrorCachingMinTTL: '30'
+            ResponsePagePath: "/admin/index.html"
+        Enabled: true
+        HttpVersion: http2
+        DefaultCacheBehavior:
+          AllowedMethods: 
+            - HEAD
+            - GET
+          CachedMethods:
+            - HEAD
+            - GET
+          ForwardedValues:
+            Headers:
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+              - Origin
+            QueryString: false
+          TargetOriginId: !Sub libera-admin-cloudfront-${Stage}
+          MinTTL: 86400
+          ViewerProtocolPolicy: allow-all
+        CacheBehaviors:
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: index.html
+            SmoothStreaming: false
+            TargetOriginId: !Sub libera-admin-cloudfront-${Stage}
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+        PriceClass: PriceClass_100
+      Tags:
+        - Key: centro-de-costos
+          Value: !Sub libera-scf-${Stage}
+
+  # Landing Distrubution
+  DistributionCloudFrontLiberaLanding:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: 
+              !GetAtt CommonBucketCloudFrontLibera.DomainName   
+            Id: !Sub libera-landing-cloudfront-${Stage}
+            OriginPath: /landing
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CommonCloudFrontOAILibera}
+          - DomainName:
+              !GetAtt DistributionCloudFrontLiberaEnterprise.DomainName
+            Id: !Sub libera-enterprise-cloudfront-${Stage}
+            CustomOriginConfig:
+              OriginProtocolPolicy: match-viewer
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginKeepaliveTimeout: 5
+              OriginReadTimeout: 30
+          - DomainName:
+              !GetAtt DistributionCloudFrontLiberaAdmin.DomainName
+            Id: !Sub libera-admin-cloudfront-${Stage}
+            CustomOriginConfig:
+              OriginProtocolPolicy: match-viewer
+              HTTPPort: 80
+              HTTPSPort: 443
+              OriginKeepaliveTimeout: 5
+              OriginReadTimeout: 30
+        DefaultRootObject: index.html
+        CustomErrorResponses:
+          - ErrorCode: '404'
+            ResponseCode: '200'
+            ErrorCachingMinTTL: '30'
+            ResponsePagePath: "/index.html"
+        Enabled: true
+        HttpVersion: http2
+        DefaultCacheBehavior:
+          AllowedMethods: 
+            - HEAD
+            - GET
+          CachedMethods:
+            - HEAD
+            - GET
+          ForwardedValues:
+            Headers:
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+              - Origin
+            QueryString: false
+          TargetOriginId: !Sub libera-landing-cloudfront-${Stage}
+          MinTTL: 86400
+          ViewerProtocolPolicy: allow-all
+        CacheBehaviors:
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: /admin
+            SmoothStreaming: false
+            TargetOriginId: !Sub libera-admin-cloudfront-${Stage}
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: /admin/*
+            SmoothStreaming: false
+            TargetOriginId: !Sub libera-admin-cloudfront-${Stage}
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: /enterprise
+            SmoothStreaming: false
+            TargetOriginId: !Sub libera-enterprise-cloudfront-${Stage}
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: /enterprise/*
+            SmoothStreaming: false
+            TargetOriginId: !Sub libera-enterprise-cloudfront-${Stage}
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: index.html
+            SmoothStreaming: false
+            TargetOriginId: !Sub libera-landing-cloudfront-${Stage}
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+        PriceClass: PriceClass_100
+      Tags:
+        - Key: centro-de-costos
+          Value: !Sub libera-scf-${Stage}
+
+Outputs:
+  LiberaLandingCloudFrontDomain:
+    Value: 
+      !GetAtt DistributionCloudFrontLiberaLanding.DomainName
+    Export:
+      Name: !Sub libera-landing-url-domain-${Stage}
+
+  AdminCloudFrontDistribution:
+    Value: !Ref DistributionCloudFrontLiberaAdmin
+    Export:
+      Name: !Sub libera-${Stage}-admin-distribution 
+
+  EnterpriseCloudFrontDistribution:
+    Value: !Ref DistributionCloudFrontLiberaEnterprise
+    Export:
+      Name: !Sub libera-${Stage}-enterprise-distribution
+
+  LandingCloudFrontDistribution:
+    Value: !Ref DistributionCloudFrontLiberaLanding
+    Export:
+      Name: !Sub libera-${Stage}-landing-distribution

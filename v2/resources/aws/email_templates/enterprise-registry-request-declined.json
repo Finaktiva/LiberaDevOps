@@ -1,0 +1,8 @@
+{
+    "Template": {
+        "TemplateName": "enterprise-registry-request-declined",
+        "SubjectPart": "LIBERA - Registro de Empresas",
+        "TextPart": "Si tiene alguna duda porfavor contectenos.",
+        "HtmlPart": "<h1> Resultado de registro</h1><br><p>Le informamos que su empresa {{enterpriseName}} no a sido aceptada para ingresar a nuestra plataforma.</p><p>Su empresa a sido rechaza por los siguientes motivos: {{explanation}}"
+    }
+}

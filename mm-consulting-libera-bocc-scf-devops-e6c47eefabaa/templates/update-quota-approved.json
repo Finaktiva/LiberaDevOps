@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "update-quota-approved",
+        "SubjectPart": "LIBERA Cupos",
+        "HtmlPart": "<h1>{{payerEnterpriseName}}</h1><p>En respuesta a su solicitud {{lenderEnterpriseName}} ha actualizado su cupo disponible:</p><p><h3>${{amount}}</h3></p><p>Para mas detalles revise su seccion de solicitudes</p>"
+    }
+}

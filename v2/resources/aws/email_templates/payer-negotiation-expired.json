@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "payer-negotiation-expired",
+        "SubjectPart": "LIBERA - Tu oferta ha expirado",
+        "HtmlPart": "<h3>{{payerEnterpriseName}}:</h3><br><p>Te informamos que la empresa {{provideEnterpriseName}} no ha respondido a tu oferta de negoacion y que esta expiro. Los detalles de tu negoacion fueron los siguientes:</p><br><p><b>Factura:</b>{{invoiceNumber}}<br> <b>Tasa de descuento:</b> {{percentage}}<br> <b>Tipo de descuento:</b> {{discountType}} <br> <b>Valor del descuento: </b> {{discountValue}}<br> <b>Vigencia del descuento:</b> {{discountDays}} <br> <b>Fecha efectiva de pago: </b> {{expectedPaymentDate}} </p> <br>"
+    }
+}

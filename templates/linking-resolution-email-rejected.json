@@ -1,0 +1,8 @@
+{
+    "Template": {
+        "TemplateName": "linking-resolution-email-rejected",
+        "SubjectPart": "LIBERA - Vinculacion de Empresas",
+        "TextPart": "Si tiene alguna duda contactenos via soporte",
+        "HtmlPart": "<h1> Noficacion sobre vinculación.</h1><br><p>La empresa {{enterpriseRequestedName}} ha rechazado la vinculacion de {{requestType}}."
+    }
+}

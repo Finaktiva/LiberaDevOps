@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "quota-assignment",
+        "SubjectPart": "LIBERA Cupos",
+        "HtmlPart": "<h1>{{payerEnterpriseName}}</h1><p>{{lenderEnterpriseName}} le ha asignado las siguientes condiciones de cupo:</p><p><b>Cupo Asignado: </b> {{assignedAmount}} <br><b>Tasa de interes: </b> {{ratePercentage}} <br><b>Tipo de Tasa: </b> {{rateType}} <br></p><p>Para mÃ¡s detalles revise su seccion de solicitudes.</p>"
+    }
+}

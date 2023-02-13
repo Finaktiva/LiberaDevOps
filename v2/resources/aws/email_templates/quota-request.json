@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "quota-request",
+        "SubjectPart": "LIBERA Cupos",
+        "HtmlPart": "<h1>{{lenderEnterpriseName}}</h1><p>{{payerEnterpriseName}} le solicita un cupo por la cantidad: </p><p><h2>{{requestedAmount}}</h2></p><p>Para mÃ¡s detalles revise su seccion de solicitudes.</p>"
+    }
+}

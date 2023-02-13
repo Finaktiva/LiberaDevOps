@@ -1,0 +1,82 @@
+Parameters:
+  stage:
+    Description: The stage for these resources
+    Type: String
+Resources:        
+  DistributionCloudFrontLiberaEnterprise:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: 
+              !Join
+                - ''
+                ##- - !ImportValue bucket-libera-cloudfront-prod
+                - - Fn::ImportValue: 
+                      !Sub "bucket-libera-cloudfront-${stage}"
+                  - .s3.amazonaws.com
+            ##Id: libera-enterprise-cloudfront-prod
+            Id: !Sub "libera-enterprise-cloudfront-${stage}"
+            S3OriginConfig:
+              OriginAccessIdentity:
+                !Join
+                  - ''
+                  - - origin-access-identity/cloudfront/
+                    ##- !ImportValue oai-libera-cloudfront-prod
+                    - Fn::ImportValue: 
+                        !Sub "oai-libera-cloudfront-${stage}"
+        DefaultRootObject: enterprise/index.html
+        CustomErrorResponses:
+          - ErrorCode: '404'
+            ResponseCode: '200'
+            ErrorCachingMinTTL: '30'
+            ResponsePagePath: "/enterprise/index.html"
+        Enabled: true
+        HttpVersion: http2
+        DefaultCacheBehavior:
+          AllowedMethods: 
+            - HEAD
+            - GET
+          CachedMethods:
+            - HEAD
+            - GET
+          ForwardedValues:
+            Headers:
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+              - Origin
+            QueryString: false
+          TargetOriginId: !Sub "libera-enterprise-cloudfront-${stage}"
+          MinTTL: 86400
+          ViewerProtocolPolicy: allow-all
+        CacheBehaviors:
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: index.html
+            SmoothStreaming: false
+            TargetOriginId: !Sub "libera-enterprise-cloudfront-${stage}"
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+        PriceClass: PriceClass_100
+      Tags:
+        - Key: centro-de-costos
+          Value: !Sub "libera-scf-${stage}"
+
+Outputs:
+  DistributionCloudFrontLiberaEnterprise:
+    Value: !GetAtt DistributionCloudFrontLiberaEnterprise.DomainName
+    Export:
+      Name: !Sub "libera-enterprise-domain-${stage}"

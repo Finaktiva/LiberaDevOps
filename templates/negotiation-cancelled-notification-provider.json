@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "negotiation-cancelled-notification-provider",
+        "SubjectPart": "LIBERA - La negociacion en curso fue cancelada",
+        "HtmlPart": "<h3>{{providerEnterpriseName}}:</h3><br><p>La empresa {{enterpriseName}} ha decidido cancelar la negociacion que tenia en curso. <br> Los siguientes son los detalles del ultimo estado en que se encontraba la negociacion antes de ser cancelada : </p><br><p><b>Factura:</b>{{invoiceNumber}}<br> <b>Tasa de descuento:</b> {{percentage}}<br> <b>Tipo de descuento:</b> {{discountType}} <br> <b>Valor del descuento: </b> {{discountValue}}<br> <b>Vigencia del descuento:</b> {{discountDays}} <br> <b>Fecha efectiva de pago: </b> {{expectedPaymentDate}} </p>"
+    }
+}

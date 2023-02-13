@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "lender-rejected-payment-provider-email",
+        "SubjectPart": "Informe sobre fondeo de factura.",
+        "HtmlPart": "<h1>{{providerEnterpriseName}}</h1><p>En respuesta a la solicitud de fondeo realizada por <b>{{payerEnterpriseName}}</b> a <b>{{lenderEnterpriseName}}</b> le informamos que ha sido declinada. <br> Correspondiente a: </p><p><b>ID Factura </b> {{invoiceNumber}} <br><b>Valor factura </b> {{amount}}<br><b>Fecha de vencimiento de la factura </b> {{expirationDate}} </p><p>Sin embargo su pagador puede realizar nuevas solicitudes en cualquier otro momento.</p>"
+    }
+}

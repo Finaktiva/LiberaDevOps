@@ -1,0 +1,7 @@
+{
+    "Template": {
+        "TemplateName": "provider-offer-rejection-email",
+        "SubjectPart": "LIBERA - Notificacion de negociaciÃ³n",
+        "HtmlPart": "<h3>{{providerEnterpriseName}}:</h3><br><p>La empresa {{payerEnterpriseName}} a rechazado la propuesta</p><br><p><b>Factura:</b> {{invoiceNumber}}<br> <b>Tasa de descuento:</b> {{percentage}}<br> <b>Tipo de descuento:</b> {{discountType}} <br> <b>Valor del descuento: </b> {{discountValue}}<br> <b>Vigencia del descuento:</b> {{discountDays}} <br> <b>Fecha efectiva de pago: </b> {{expectedPaymentDate}} </p>"
+    }
+}

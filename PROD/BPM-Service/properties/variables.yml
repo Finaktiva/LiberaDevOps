@@ -1,0 +1,170 @@
+DB_CONNECTION: &DB_CONNECTION
+  DB_HOST: prod-liberascf-core.c3enewvfsmvm.us-east-1.rds.amazonaws.com
+  DB_PORT: 3306
+  DB_USER: admin
+  DB_PASSWORD: libera_admin_2019
+  DB_NAME: libera_scf_core
+
+SES_VARS: &SES_VARS
+  SES_REGION: ${self:provider.region}
+  SES_API_VERSION: 2010-12-01
+  SES_CHARSET: UTF-8
+  SES_SOURCE: libera-stage@mediomelon.com.mx ****** ACTUALIZAR CON DOMINIO ******
+  SES_SEND_CONFIRMATION_TEMPLATE: linking-confirmation-email
+  SES_ACCEPTED_TEMPLATE_NAME: linking-resolution-email-accepted
+  SES_REJECTED_TEMPLATE_NAME: linking-resolution-email-rejected
+  SES_SEND_REQUEST_MODULE_INVITATION_TEMPLATE: module-request-invitation
+  SES_PROVIDER_NEGOTIATION_TEMPLATE: provider-new-negotiation-request
+  SES_PROVIDER_NEGOTIATION_CANCELLED_TEMPLATE: negotiation-cancelled-notification-provider
+  SES_PAYER_NOGOTIATION_EXPIRED_TEMPLATE: payer-negotiation-expired
+  SES_PAYER_NEW_OFFER_TEMPLATE: payer-new-offer-email
+  SES_PAYER_ACCEPTED_DISCOUNT_TEMPLATE: payer-offer-approvement-email
+  SES_PAYER_OFFER_REJECTION_TEMPLATE: payer-offer-rejection-email
+  SES_PROVIDER_ACCEPTED_DISCOUNT_TEMPLATE: provider-offer-approvement-email
+  SES_PROVIDER_NEGOTIATION_EXPIRED_TEMPLATE: provider-negotiation-expired
+  SES_PAYER_NEGOTIATION_CLOSED_TEMPLATE: payer-negotiation-closed
+  SES_PROVIDER_OFFER_REJECTION_TEMPLATE: provider-offer-rejection-email
+  SES_PROVIDER_FUNDING_EXPIRED_TEMPLATE: provider-payment-date-expiration-email
+  SES_LENDER_FUNDING_REQUEST_TEMPLATE: lender-funding-request-email
+  SES_LENDER_REJECTED_PAYMENT_EMAIL_PAYER_TEMPLATE: lender-rejected-payment-payer-email
+  SES_PAYMENT_CONFIRMATION_PAYER_TEMPLATE: payment-confirmation-payer-email
+  SES_PAYMENT_CONFIRMATION_PROVIDER_TEMPLATE: payment-confirmation-provider-email
+  SES_PAYER_FUNDING_EXPIRED_TEMPLATE: payer-payment-date-expiration-email
+  SES_LENDER_REJECTED_PAYMENT_EMAIL_PROVIDER_TEMPLATE: lender-rejected-payment-provider-email
+  SES_NEW_COUNTEROFFER_EMAIL: new-counteroffer-email
+  SES_LENDER_FUNDING_REQUEST_REMINDER_EMAIL_TEMPLATE: lender-funding-request-reminder-email
+  SES_PAYMENT_CONFIRMATION_REMINDER_PROVIDER_TEMPLATE: payment-confirmation-provider-reminder-email
+
+CLOUDFRONT_VARS: &CLOUDFRONT_VARS
+  URL_FRONT: https://${cf:libera-enterprise-cloudfront-${self:provider.stage}.DistributionCloudFrontLiberaEnterpriseProd}/enterprise/link
+  URL_FRONT_MODULE: https://${cf:libera-enterprise-cloudfront-${self:provider.stage}.DistributionCloudFrontLiberaEnterpriseProd}/enterprise/core/my-enterprise/modules
+
+TOKEN_VARS: &TOKEN_VARS
+  EXPIRATION_TIME: 24
+  UNIT_TIME: hours
+  
+SQS_VARS: &SQS_VARS
+  SQS_LIBERA_ENTERPRISE_BULK_QUEUE: ${cf:libera-environment-${self:provider.stage}.QueueLiberaEnterpriseRequestUrl}
+  SQS_LIBERA_ENTERPRISE_REQUEST_QUEUE: ${cf:libera-environment-${self:provider.stage}.QueueLiberaEnterpriseRequestUrl}
+  SQS_LIBERA_INVOICE_NEGOTIATION_QUEUE:	${cf:libera-environment-${self:provider.stage}.QueueLiberaInvoiceNegotiationUrl}
+  SQS_INVOICE_NEGOTIATON_QUEUE: ${cf:libera-environment-${self:provider.stage}.QueueLiberaInvoiceNegotiationUrl}
+  SQS_INVOICE_FUNDING_QUEUE: ${cf:libera-environment-${self:provider.stage}.QueueLiberaInvoiceFundingUrl}
+
+
+pingFuntionsEnv:
+  <<: *DB_CONNECTION
+
+LIST_ENTERPRISE_MODULES_ENV:
+  <<: *DB_CONNECTION
+  
+VERIFY_ENTERPRISE_EXISTENCE_ENV:
+  <<: *DB_CONNECTION
+
+UPDATE_LINK_REQUEST_ENV:
+  <<: *DB_CONNECTION
+
+CHECK_ENTERPRISE_STATUS_ENV:
+  <<: *DB_CONNECTION
+
+SEND_LINKING_RESOLUTION_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+  
+SEND_CONFIRMATION_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+  <<: *TOKEN_VARS
+  <<: *CLOUDFRONT_VARS
+
+CHECK_CURRENT_REQUESTS_ENV:
+  <<: *DB_CONNECTION
+
+SEND_REQUEST_MODULE_INVITATION_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+  <<: *CLOUDFRONT_VARS
+
+CHECK_REQUEST_STATUS_ENV:
+  <<: *DB_CONNECTION
+
+SEND_PROVIDER_NEGOTIATION_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+
+SEND_PAYER_NEGOTIATION_NOTIFICATION_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+  
+GET_EXPIRATION_ENV:
+  <<: *DB_CONNECTION
+
+UPDATE_INVOICE_NEGOTIATION_STATUS_ENV:
+  <<: *DB_CONNECTION
+  <<: *SQS_VARS
+  
+SEND_PROVIDER_NEGOTIATION_CANCELLED_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+
+SEND_PAYER_NEW_OFFER_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+  
+SEND_PAYER_ACCEPTED_DISCOUNT_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+
+SEND_PAYER_REJECTED_DISCOUNT_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+
+SEND_PROVIDER_ACCEPTED_DISCOUNT_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+  
+SEND_PROVIDER_NEGOTIATION_NOTIFICATION_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+
+SEND_PROVIDER_REJECTED_DISCOUNT_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+
+SEND_PAYER_NEGOTIATION_CLOSED_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+
+UPDATE_FUNDING_REQUEST_ENV:
+  <<: *DB_CONNECTION
+  <<: *SQS_VARS
+  <<: *SES_VARS
+
+SEND_PROVIDER_FUNDING_NOTIFICATION_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+  
+UPDATE_QUOTA_FUNDING_ENV:
+  <<: *DB_CONNECTION
+  
+SEND_FUNDING_REQUEST_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+
+SEND_REJECTED_PAYMENT_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+  
+GET_DAYS_LEFT_UNTIL_PAYMENT_ENV:
+   <<: *DB_CONNECTION
+
+SEND_PAYER_FUNDING_NOTIFICATION_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+
+SEND_PAYMENT_CONFIRMATION_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS
+
+SEND_PROVIDER_CONFIRMATION_EMAIL_ENV:
+  <<: *DB_CONNECTION
+  <<: *SES_VARS

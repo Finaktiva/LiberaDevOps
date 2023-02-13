@@ -1,0 +1,38 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ecr:BatchGetImage",
+                "ecr:DescribeImages",
+                "ecr:DescribeRegistry",
+                "ecr:DescribeRepositories",
+                "ecr:GetAuthorizationToken",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:ListImages",
+                "lambda:AddLayerVersionPermission",
+                "lambda:AddPermission",
+                "lambda:CreateAlias",
+                "lambda:CreateEventSourceMapping",
+                "lambda:GetAlias",
+                "lambda:GetEventSourceMapping",
+                "lambda:GetFunction",
+                "lambda:GetFunctionConfiguration",
+                "lambda:GetLayerVersion",
+                "lambda:GetLayerVersionPolicy",
+                "lambda:GetPolicy",
+                "lambda:InvokeAsync",
+                "lambda:InvokeFunction",
+                "lambda:ListAliases",
+                "lambda:ListEventSourceMappings",
+                "lambda:ListFunctions",
+                "lambda:ListLayers",
+                "lambda:ListLayerVersions",
+                "lambda:ListTags"
+            ],
+            "Resource": "*"
+        }
+    ]
+}

@@ -1,0 +1,69 @@
+Resources:        
+  DistributionCloudFrontLiberaAdminStage:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: 
+              !Join
+                - ''
+                - - !ImportValue bucket-libera-cloudfront-stage
+                  - .s3.amazonaws.com
+            Id: libera-admin-cloudfront-stage
+            S3OriginConfig:
+              OriginAccessIdentity:
+                !Join
+                  - ''
+                  - - origin-access-identity/cloudfront/
+                    - !ImportValue oai-libera-cloudfront-stage
+        DefaultRootObject: admin/index.html
+        CustomErrorResponses:
+          - ErrorCode: '404'
+            ResponseCode: '200'
+            ErrorCachingMinTTL: '30'
+            ResponsePagePath: "/admin/index.html"
+        Enabled: true
+        HttpVersion: http2
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - HEAD
+            - GET
+          CachedMethods:
+            - HEAD
+            - GET
+          ForwardedValues:
+            Headers:
+              - Access-Control-Request-Headers
+              - Access-Control-Request-Method
+              - Origin
+            QueryString: false
+          TargetOriginId: libera-admin-cloudfront-stage
+          MinTTL: 86400
+          ViewerProtocolPolicy: allow-all
+        CacheBehaviors:
+          - AllowedMethods:
+              - HEAD
+              - GET
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: false
+            DefaultTTL: 20
+            MaxTTL: 20
+            MinTTL: 10
+            PathPattern: index.html
+            SmoothStreaming: false
+            TargetOriginId: libera-admin-cloudfront-stage
+            ViewerProtocolPolicy: allow-all
+            ForwardedValues:
+              Headers:
+                - Access-Control-Request-Headers
+                - Access-Control-Request-Method
+                - Origin
+              QueryString: false
+
+Outputs:
+  LiberaAdminCloudFrontDomainStage:
+    Value: !GetAtt DistributionCloudFrontLiberaAdminStage.DomainName
+    Export:
+      Name: libera-admin-domain-stage
