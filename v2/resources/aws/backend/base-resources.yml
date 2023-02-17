@@ -3,18 +3,6 @@ Parameters:
   Stage:
     Type: String
     Description: Defines stage for resources installation
-  IdentityProviderClientID: # client_id: "YourOIDCClientId"
-    Type: String 
-  IdentityProviderClientSecret:  # client_secret: "YourOIDCClientSecret"
-    Type: String
-  IdentityProviderOIDCIssuer: # oidc_issuer: YourOIDCIssuerURL
-    Type: String
-  IdentityProviderAttributesRequestMethod: # attributes_request_method: "GET"
-    Type: String
-    Default: GET
-  FrontendURL:
-    Type: String
-    Default: "http://localhost:3000"
 
 Resources:
   ApiGatewayRestApi:
@@ -28,7 +16,7 @@ Resources:
       BucketName: !Sub libera-${Stage}-resources
       Tags:
         - Key: centro-de-costos
-          Value: !Sub libera-scf-${Stage}
+          Value: !Sub libera-scf-${Stage}1
       AccessControl: PublicReadWrite
       CorsConfiguration:
         CorsRules:
@@ -111,51 +99,6 @@ Resources:
       ExplicitAuthFlows:
         - ADMIN_NO_SRP_AUTH
       GenerateSecret: false
-      #Configuration to be able to use the pool / OAuth and the OIDC
-      AllowedOAuthFlows:
-        - code
-        - implicit
-      CallbackURLs:
-        - !Ref FrontendURL
-      AllowedOAuthFlowsUserPoolClient: true
-      AllowedOAuthScopes:
-        - phone
-        - email
-        - profile
-        - openid
-        - aws.cognito.signin.user.admin
-      SupportedIdentityProviders:
-        - COGNITO
-        - !Ref UserPoolIdentityProvider
-      TokenValidityUnits:
-        IdToken: minutes
-        RefreshToken: days
-      IdTokenValidity: 10
-      RefreshTokenValidity: 10
-        
-  CognitoPoolDomain:
-    Type: AWS::Cognito::UserPoolDomain
-    Properties:
-      UserPoolId: !Ref CognitoUserPoolLiberaUserPool
-      Domain: !Sub libera-${Stage}
-
-  # Once the Identity provider is configured, a congito group will be created
-  # And this group will be used for those users
-  UserPoolIdentityProvider:
-    Type: AWS::Cognito::UserPoolIdentityProvider
-    Properties:
-      UserPoolId: !Ref CognitoUserPoolLiberaUserPool
-      ProviderName: !Sub ${Stage}-active-directory
-      ProviderDetails:
-        client_id: !Ref IdentityProviderClientID
-        client_secret: !Ref IdentityProviderClientSecret
-        oidc_issuer: !Ref IdentityProviderOIDCIssuer
-        attributes_request_method: !Ref IdentityProviderAttributesRequestMethod
-        authorize_scopes: "email profile openid"
-      ProviderType: OIDC
-      AttributeMapping:
-        email: email
-
   CognitoIdentityPool:
       Type: AWS::Cognito::IdentityPool
       Properties:
@@ -166,7 +109,6 @@ Resources:
               Ref: CognitoUserPoolClient
             ProviderName:
               Fn::GetAtt: [ "CognitoUserPoolLiberaUserPool", "ProviderName" ]
-
   CognitoIdentityPoolRoles:
     Type: AWS::Cognito::IdentityPoolRoleAttachment
     Properties:
