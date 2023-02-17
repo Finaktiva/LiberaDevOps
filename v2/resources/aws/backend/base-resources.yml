@@ -13,7 +13,7 @@ Resources:
   S3BucketProfileImageBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub libera-${Stage}-resources
+      BucketName: !Sub libera-${Stage}-resources-1
       Tags:
         - Key: centro-de-costos
           Value: !Sub libera-scf-${Stage}1
