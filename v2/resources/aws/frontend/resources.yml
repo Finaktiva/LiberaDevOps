@@ -7,7 +7,7 @@ Resources:
   CommonBucketCloudFrontLibera:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Sub libera-cloudfront-${Stage}-{cli-profile}   
+      BucketName: !Sub libera-cloudfront-${Stage}-${cli-profile}   
       Tags:
         - Key: centro-de-costos
           Value: !Sub  libera-scf-${Stage}
